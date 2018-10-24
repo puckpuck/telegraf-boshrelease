@@ -1,3 +1,7 @@
+# Create a simple telegraf release which will gather mem and net stats from local VM
+# This deployment should be used a sample to create more robusts templates
+# Replace the telegraf.plugin_config property with an appropriate plugin configuration for your needs
+
 name: telegraf
 
 releases:
@@ -34,7 +38,7 @@ properties:
       env-tag: my-environment
     interval: 60s
     wavefront:
-      host: 192.168.1.29
+      host: proxy-dns-or-ip
       port: 2878
     plugin_config: |
       # Read metrics about memory usage
