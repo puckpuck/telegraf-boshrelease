@@ -1,0 +1,58 @@
+#!/bin/bash -eu
+#
+# Copyright 2017 Comcast Cable Communications Management, LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+JOB_NAME=telegraf
+
+JOB_DIR=/var/vcap/jobs/$JOB_NAME
+PKG_DIR=/var/vcap/packages/$JOB_NAME
+RUN_DIR=/var/vcap/sys/run/$JOB_NAME
+LOG_DIR=/var/vcap/sys/log/$JOB_NAME
+PIDFILE=$RUN_DIR/$JOB_NAME.pid
+
+source $JOB_DIR/bin/pid_utils.sh
+
+case $1 in
+  start)
+    pid_guard $PIDFILE $JOB_NAME
+
+    mkdir -p $RUN_DIR
+    mkdir -p $LOG_DIR
+
+    PATH=/var/vcap/packages/telegraf/bin:$PATH
+
+    # check configuration
+    echo "checking telegraf configuration..."
+    telegraf --config $JOB_DIR/config/telegraf.conf --test > /dev/null
+    echo "telegraf configuration OK"
+    echo
+
+    # store pid in $PIDFILE
+    echo $$ > $PIDFILE
+
+    exec telegraf \
+      --config $JOB_DIR/config/telegraf.conf --config-directory $PKG_DIR/config/telegraf.d \
+      >>$LOG_DIR/$JOB_NAME.log 2>&1
+
+    ;;
+
+  stop)
+    kill_and_wait $PIDFILE
+    ;;
+
+  *)
+    echo "Usage: ctl {start|stop}"
+    ;;
+esac

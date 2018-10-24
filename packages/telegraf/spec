@@ -1,0 +1,8 @@
+---
+name: telegraf
+
+dependencies: []
+
+files:
+- telegraf/*
+- telegraf-config/telegraf.d/*

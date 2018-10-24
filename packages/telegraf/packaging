@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+set -u
+
+tar xfz telegraf/telegraf-*.tar.gz \
+  --strip-components 3 \
+  --wildcards \
+  -C $BOSH_INSTALL_TARGET './*/usr/bin/telegraf'
+
+mkdir -p ${BOSH_INSTALL_TARGET}/config/telegraf.d
+find telegraf-config/telegraf.d -type f -exec cp \{\} ${BOSH_INSTALL_TARGET}/config/telegraf.d/ \;
+
+  

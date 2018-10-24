@@ -1,0 +1,51 @@
+name: telegraf
+
+releases:
+- name: telegraf
+  version: latest
+
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: latest
+
+update:
+  canaries: 1
+  max_in_flight: 1
+  canary_watch_time: 1000-30000
+  update_watch_time: 1000-30000
+
+jobs:
+  - name: telegraf
+    templates:
+    - name: telegraf
+      release: telegraf
+    azs: [z1, z2, z3]
+    instances: 1
+    persistent_disk: 0
+    vm_type: default
+    stemcell: default
+    networks:
+    - name: default
+
+properties:
+  telegraf:
+    tags:
+      env-tag: my-environment
+    interval: 60s
+    wavefront:
+      host: 192.168.1.29
+      port: 2878
+    plugin_config: |
+      # Read metrics about memory usage
+      [[inputs.mem]]
+        # no configuration
+        
+      # # Read metrics about network interface usage
+      [[inputs.net]]
+      #   ## By default, telegraf gathers stats from any up interface (excluding loopback)
+      #   ## Setting interfaces will tell it to gather these explicit interfaces,
+      #   ## regardless of status.
+      #   ##
+        interfaces = ["all", "eth0"]
+

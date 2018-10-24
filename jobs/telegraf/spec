@@ -1,0 +1,33 @@
+---
+name: telegraf
+
+templates: 
+  bin/telegraf_ctl: bin/telegraf_ctl
+  bin/pid_utils.sh: bin/pid_utils.sh
+  config/telegraf.conf.erb: config/telegraf.conf
+
+packages:
+- telegraf
+
+properties:
+  telegraf.wavefront.host:
+    default: ""
+    description: "DNS or IP of Wavefront Proxy Host"
+  telegraf.wavefront.port:
+    default: "2878"
+    description: "Port for Wavefront Proxy"
+  telegraf.wavefront.prefix:
+    default: ""
+    description: "Prefix to use for all metrics output"
+  telegraf.tags:
+   default: {}    
+   description: "Default tags for all metrics output"
+  telegraf.interval:
+    default: "60s"
+    description: "Collection interval"
+  telegraf.hostname_prefix:
+    default: ""
+    description: "Prefix to use for generated hostname of Telegraf host"		
+  telegraf.plugin_config:
+    default: ""
+    description: "Extra Telegraf plugin configuration details"

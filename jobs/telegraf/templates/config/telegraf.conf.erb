@@ -1,0 +1,22 @@
+[global_tags]
+  <% if_p("telegraf.tags") do |tags| tags.each do |tag, value| %>
+  <%= tag %> = "<%= value %>"
+  <% end; end %>
+
+[agent]
+  interval = "<%= p('telegraf.interval') %>"
+  flush_interval = "<%= p('telegraf.interval') %>"
+  hostname = "<%= p("telegraf.hostname_prefix") %><%= spec.name %>.<%= spec.index %>"
+
+
+<%= p("telegraf.plugin_config") %>
+
+
+###############################################################################
+#                                  OUTPUTS                                    #
+###############################################################################
+
+[[outputs.wavefront]]
+  host = "<%= p("telegraf.wavefront.host") %>"
+  port = <%= p("telegraf.wavefront.port") %>
+  prefix = "<%= p("telegraf.wavefront.prefix") %>"
